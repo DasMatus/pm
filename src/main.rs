@@ -12,6 +12,11 @@ fn main() {
             step: "".to_string(),
             command: vec!["".to_string()],
             chdir: Some("".to_string()),
+            dl: Some(vec![DL {
+                url: "".to_string(),
+                name: "".to_string(),
+                ft: "".to_string(),
+            }]),
         }],
         build: vec![Build {
             step: "".to_string(),

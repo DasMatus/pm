@@ -11,9 +11,15 @@ pub(crate) struct Cfg {
     pub(crate) build: Vec<Build>,
     pub(crate) install: Vec<Install>,
 }
-
+#[derive(Serialize, Deserialize)]
+pub(crate) struct DL {
+    pub(crate) url: String,
+    pub(crate) name: String,
+    pub(crate) ft: String,
+}
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Prepare {
+    pub(crate) dl: Option<Vec<DL>>,
     pub(crate) step: String,
     pub(crate) command: Vec<String>,
     pub(crate) chdir: Option<String>,
@@ -57,14 +63,32 @@ impl Cfg {
         }
     }
     pub(crate) fn run(self) {
-        let len: usize =
-            self.dependencies.len() + 
-            self.prepare.len()      + 
-            self.build.len()        + 
-            self.install.len();
+        let len: usize = self.dependencies.len()
+            + self.dependencies.len()
+            + self.prepare.len()
+            + self.build.len()
+            + self.install.len();
         let bar =
             indicatif::ProgressBar::new((len as usize).try_into().unwrap());
-        bar.style();
-        println!(">> ");
+        bar.set_style(indicatif::ProgressStyle::default_bar());
+        bar.set_message(format!("Making package {}", self.name));
+        let cesta = std::path::Path::new("/tmp").join(self.name).clone();
+        for i in self.prepare {
+            if let Some(i) = i.dl {
+                for url in i {
+                    bar.set_message(format!(
+                        "Downloading {:#?} into {}/{}",
+                        cesta.as_path().to_str(),
+                        url.url,
+                        format!("{}{}", url.name, url.ft)
+                    ));
+                    std::fs::DirBuilder::new()
+                        .recursive(true)
+                        .create(&cesta)
+                        .unwrap();
+                    fetch_data::download(url.url, &cesta).unwrap();
+                }
+            }
+        }
     }
 }

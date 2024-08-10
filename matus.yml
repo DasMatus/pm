@@ -1,0 +1,22 @@
+---
+name: ""
+version: ""
+dependencies:
+  - ""
+provides:
+  - ""
+prepare:
+  - step: ""
+    command:
+      - ""
+    chdir: ""
+build:
+  - step: ""
+    command:
+      - ""
+    chdir: ""
+install:
+  - step: ""
+    command:
+      - ""
+    chdir: ""
