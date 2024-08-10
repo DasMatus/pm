@@ -1,0 +1,4 @@
+unstable_features = true
+force_multiline_blocks = true
+match_arm_blocks = true
+max_width = 80
