@@ -2,14 +2,16 @@
 name = "packagemanager"
 version = "0.1.0"
 edition = "2021"
+lto = true
 
 [dependencies]
-cc = { version = "1.1.8", features = ["parallel"] }
 clap = { version = "4.5.13", features = ["derive"] }
-cmake = "0.1.50"
 fetch-data = "0.2.0"
 indicatif = "0.17.8"
 serde = { version = "1.0.204", features = ["derive"] }
 serde_yaml = "0.9.34"
+filedb = {version = "0.1.0", path = "filedb"}
+anyhow = "1.0.86"
+
 [workspace]
 members = ["filedb"]

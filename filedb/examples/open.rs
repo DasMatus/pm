@@ -10,10 +10,10 @@ fn main() {
     db.populate(
         "government".to_string(),
         "id".to_string(),
-        Data {
+        Some(Data {
             name: "".to_string(),
             surname: "".to_string(),
-        },
+        }),
     );
     println!("{:#?}", db.open("government".to_string(), "id".to_string()));
 }

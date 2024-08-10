@@ -1,4 +1,5 @@
 use clap::Parser;
+use filedb::DB;
 use serde::{Deserialize, Serialize};
 #[non_exhaustive]
 #[derive(Serialize, Deserialize)]
@@ -62,17 +63,16 @@ impl Cfg {
             install: yaml.install,
         }
     }
-    pub(crate) fn run(self) {
+    pub(crate) fn run(self) -> anyhow::Result<(), anyhow::Error> {
         let len: usize = self.dependencies.len()
             + self.dependencies.len()
             + self.prepare.len()
             + self.build.len()
             + self.install.len();
-        let bar =
-            indicatif::ProgressBar::new((len as usize).try_into().unwrap());
+        let bar = indicatif::ProgressBar::new((len as usize).try_into()?);
         bar.set_style(indicatif::ProgressStyle::default_bar());
         bar.set_message(format!("Making package {}", self.name));
-        let cesta = std::path::Path::new("/tmp").join(self.name).clone();
+        let cesta = std::path::Path::new("/tmp").join(self.name);
         for i in self.prepare {
             if let Some(i) = i.dl {
                 for url in i {
@@ -84,11 +84,11 @@ impl Cfg {
                     ));
                     std::fs::DirBuilder::new()
                         .recursive(true)
-                        .create(&cesta)
-                        .unwrap();
-                    fetch_data::download(url.url, &cesta).unwrap();
+                        .create(&cesta)?;
+                    fetch_data::download(url.url, &cesta)?;
                 }
             }
         }
+        Ok(())
     }
 }

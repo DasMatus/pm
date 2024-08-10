@@ -9,5 +9,5 @@ struct Data {
 fn main() {
     // Initialize the database
     let mut db: DB<Data> = DB::new("database".to_string());
-    db.populate("id".to_string(), "personal".to_string(), Data::default());
+    db.populate("id".to_string(), "personal".to_string(), None);
 }
