@@ -27,6 +27,7 @@ pub(crate) struct DL {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Prepare {
     pub(crate) dl: Option<Vec<DL>>,
+    pub(crate) filename: Option<Vec<String>>,
     pub(crate) step: String,
     pub(crate) command: Vec<String>,
     pub(crate) chdir: Option<String>,
@@ -94,6 +95,15 @@ impl Cfg {
                         .recursive(true)
                         .create(&cesta)?;
                     fetch_data::download(url.url, &cesta)?;
+                    for file in std::fs::read_dir(&cesta)? {
+                        let d = file?;
+                        compress_tools::uncompress_archive(
+                            d.path(),
+                            Path::new("source").join(d.file_name()),
+                            compress_tools::Ownership::Preserve,
+                        );
+                        println!(">> Decompressed archive {d}");
+                    }
                 }
             }
         }

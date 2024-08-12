@@ -14,6 +14,7 @@ filedb = {version = "0.1.0", path = "filedb"}
 anyhow = "1.0.86"
 derive_more = { version = "1.0.0", features = ["as_ref"] }
 toml = "0.8.19"
+compress-tools = "0.15.1"
 
 [workspace]
 members = ["filedb"]

@@ -37,6 +37,7 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
                 name: "".to_string(),
                 ft: "".to_string(),
             }]),
+            filename: "".to_string(),
         }],
         build: vec![Build {
             step: "".to_string(),
@@ -62,10 +63,12 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
         for i in cfg.pkgs {
             if b == i {
                 println!(">> Package {i} exists, not rebuilding it");
-                continue
+                continue;
+            }
+            else {
+                Cfg::new(b).run()?;
             }
         }
-        Cfg::new(b).run()?;
     }
     Ok(())
 }

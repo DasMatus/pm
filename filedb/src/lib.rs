@@ -54,7 +54,8 @@ impl<Struct: Serialize + Default + for<'de> serde::Deserialize<'de>>
         self.table = table;
         self.contents = contents;
         self.db_row = row;
-        let toml = toml::to_string_pretty(&self.contents).unwrap_or("The databse doesn't exist yet".to_string());
+        let toml = toml::to_string_pretty(&self.contents)
+            .unwrap_or("The databse doesn't exist yet".to_string());
         std::fs::write(
             Path::new(join.to_str().unwrap()).join(&self.db_row),
             toml,
