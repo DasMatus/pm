@@ -10,13 +10,13 @@ pub(crate) struct Cfg {
     pub(crate) provides: Vec<String>,
     pub(crate) prepare: Vec<Prepare>,
     pub(crate) build: Vec<Build>,
-    pub(crate) install: Vec<Install>,
+    pub(crate) install: Vec<Build>,
 }
 
 #[derive(Serialize, Deserialize, Default, AsRef)]
 pub(crate) struct Contents {
     #[as_ref(forward)]
-    pkgs: Vec<String>,
+    pub(crate) pkgs: Vec<String>,
 }
 #[derive(Serialize, Deserialize)]
 pub(crate) struct DL {
@@ -49,9 +49,11 @@ pub(crate) struct Install {
 #[clap(name = "pm", about, long_about = None)]
 pub(crate) struct Cli {
     #[arg(long = "init")]
-    pub(crate) init: Option<String>,
+    /// Where you want your file to be
+    pub(crate) path: Option<String>,
     #[arg(long = "build")]
-    pub(crate) make: Option<String>,
+    /// Path to the build file
+    pub(crate) file: Option<String>,
 }
 impl Cfg {
     pub(crate) fn new(c: String) -> Self {

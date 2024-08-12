@@ -3,7 +3,6 @@
 //! It's very simple, since it only handles writing and reading to/from files and doesn't include encryption and CLI.
 //! > You have to do these things yourself, either through having the database on something like [VeraCrypt volume](https://veracrypt.org) or on another machine.
 //! Anyway, take a look around.
-
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 /// Main struct that handles the database
@@ -22,15 +21,12 @@ impl<Struct: Serialize + Default + for<'de> serde::Deserialize<'de>>
 {
     /// Initializes the database
     pub fn new(location: String) -> Self {
-        match Path::new(&location).exists() {
-            true => {}
-            false => {
-                std::fs::DirBuilder::new()
-                    .recursive(true)
-                    .create(&location)
-                    .unwrap()
-            }
-        };
+        if Path::new(&location).exists() == false {
+            std::fs::DirBuilder::new()
+                .recursive(true)
+                .create(&location)
+                .unwrap()
+        }
         Self {
             db_row: "".to_string(),
             db_location: location,
@@ -58,7 +54,7 @@ impl<Struct: Serialize + Default + for<'de> serde::Deserialize<'de>>
         self.table = table;
         self.contents = contents;
         self.db_row = row;
-        let toml = toml::to_string_pretty(&self.contents).unwrap();
+        let toml = toml::to_string_pretty(&self.contents).unwrap_or("The databse doesn't exist yet".to_string());
         std::fs::write(
             Path::new(join.to_str().unwrap()).join(&self.db_row),
             toml,

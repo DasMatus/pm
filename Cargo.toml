@@ -17,3 +17,6 @@ toml = "0.8.19"
 
 [workspace]
 members = ["filedb"]
+
+[package.metadata.docs.rs]
+cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples"]
