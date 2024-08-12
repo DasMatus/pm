@@ -2,6 +2,7 @@
 //! A **library-only** database that uses files instead of single monolith `.db` file.
 //! It's very simple, since it only handles writing and reading to/from files and doesn't include encryption and CLI.
 //! > You have to do these things yourself, either through having the database on something like [VeraCrypt volume](https://veracrypt.org) or on another machine.
+//! Anyway, take a look around.
 
 use serde::{Deserialize, Serialize};
 use std::path::Path;

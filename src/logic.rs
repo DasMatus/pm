@@ -1,5 +1,5 @@
 use clap::Parser;
-use filedb::DB;
+use derive_more::AsRef;
 use serde::{Deserialize, Serialize};
 #[non_exhaustive]
 #[derive(Serialize, Deserialize)]
@@ -11,6 +11,12 @@ pub(crate) struct Cfg {
     pub(crate) prepare: Vec<Prepare>,
     pub(crate) build: Vec<Build>,
     pub(crate) install: Vec<Install>,
+}
+
+#[derive(Serialize, Deserialize, Default, AsRef)]
+pub(crate) struct Contents {
+    #[as_ref(forward)]
+    pkgs: Vec<String>,
 }
 #[derive(Serialize, Deserialize)]
 pub(crate) struct DL {

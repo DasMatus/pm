@@ -1,17 +1,19 @@
+#![allow(deprecated)]
 mod logic;
 use std::path::Path;
 
 use clap::Parser;
 use filedb::DB;
 use logic::*;
-use serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize, Default)]
-struct Contents {
-    pkgs: Vec<String>,
-}
 fn main() -> anyhow::Result<(), anyhow::Error> {
     println!(">> Checking if the database exists");
+    #[cfg(target_os = "macos")]
+    let db_loc = &Path::new(&std::env::home_dir().unwrap())
+        .join("mtos/filedb")
+        .to_str()
+        .unwrap()
+        .to_string();
+    #[cfg(target_os = "linux")]
     let db_loc = "/mtos/filedb";
     if Path::new(db_loc).exists() {
         println!("\t>> Database exists, continuing");
@@ -54,6 +56,8 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
         println!(">> Written example configuration to {p}.yml");
     }
     if let Some(b) = args.make {
+        let db: DB<Contents> = DB::new(db_loc.to_string());
+        let cfg: Contents = db.open("pkgs".to_string(), "db".to_string());
         Cfg::new(b).run()?;
     }
     Ok(())
