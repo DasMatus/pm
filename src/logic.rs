@@ -98,11 +98,12 @@ impl Cfg {
                     for file in std::fs::read_dir(&cesta)? {
                         let d = file?;
                         compress_tools::uncompress_archive(
-                            d.path(),
+                            d,
                             Path::new("source").join(d.file_name()),
                             compress_tools::Ownership::Preserve,
                         );
-                        println!(">> Decompressed archive {d}");
+                        bar.set_message(format!("Decompressing {d} to {}", 
+                            Path::new("source").join(d.file_name())));
                     }
                 }
             }

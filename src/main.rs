@@ -1,4 +1,4 @@
-#![allow(deprecated)]
+#![warn(clippy::all)]
 mod logic;
 use std::path::Path;
 
@@ -64,8 +64,7 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
             if b == i {
                 println!(">> Package {i} exists, not rebuilding it");
                 continue;
-            }
-            else {
+            } else {
                 Cfg::new(b).run()?;
             }
         }
