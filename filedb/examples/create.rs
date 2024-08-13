@@ -1,4 +1,4 @@
-use filedb::DB;
+use filedb_ng::DB;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Default)]
