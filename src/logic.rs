@@ -1,3 +1,5 @@
+use std::process::Command;
+
 use clap::Parser;
 use derive_more::AsRef;
 use serde::{Deserialize, Serialize};
@@ -27,8 +29,8 @@ pub(crate) struct DL {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Prepare {
     pub(crate) dl: Option<Vec<DL>>,
-    pub(crate) filename: Option<Vec<String>>,
     pub(crate) step: String,
+    pub(crate) dir: Option<Vec<String>>,
     pub(crate) command: Vec<String>,
     pub(crate) chdir: Option<String>,
 }
@@ -59,9 +61,9 @@ pub(crate) struct Cli {
 impl Cfg {
     pub(crate) fn new(c: String) -> Self {
         let yaml: Self = serde_yaml::from_str(
-            std::fs::read_to_string(c.as_str()).unwrap().as_str(),
+            std::fs::read_to_string(c.as_str())?().as_str(),
         )
-        .unwrap();
+        ?();
         Self {
             name: yaml.name,
             version: yaml.version,
@@ -82,6 +84,7 @@ impl Cfg {
         bar.set_style(indicatif::ProgressStyle::default_bar());
         bar.set_message(format!("Making package {}", self.name));
         let cesta = std::path::Path::new("/tmp").join(self.name);
+        // prepare part
         for i in self.prepare {
             if let Some(i) = i.dl {
                 for url in i {
@@ -109,6 +112,43 @@ impl Cfg {
                     }
                 }
             }
+            bar.set_message(format!("Running prepare task {}", i.step));
+            std::env::set_current_dir("source");
+            if let Some(chdir) = i.chdir {
+                Command::new(i.command[1])
+                    .args(i.prepare[2..i.command.len()])
+                    .current_dir(chdir)
+                    .status()?
+            }
+            Command::new(i.command[1])
+                .args(i.prepare[2..i.command.len()])
+                .status()?
+        }
+        // build
+        for build in self.build {
+            bar.set_message(format!("Running command {}", build.command.iter()));
+            if let Some(chdir) = i.chdir {
+                Command::new(build.command[1])
+                    .args(build.command[2..=build.command.len()].iter())
+                    .current_dir(chdir)
+                    .status()?
+            }
+            Command::new(build.command[1])
+                .args(build.command[2..=build.command.len()].iter())
+                .status()?
+        }
+        // install
+        for install in self.install {
+            bar.set_message(format!("Running command {}", build.command.iter()));
+            if let Some(chdir) = i.chdir {
+                Command::new(install.command[1])
+                    .args(install.command[2..=build.command.len()].iter())
+                    .current_dir(chdir)
+                    .status()?
+            }
+            Command::new(install.command[1])
+                .args(install.command[2..=install.command.len()].iter())
+                .status()?
         }
         Ok(())
     }

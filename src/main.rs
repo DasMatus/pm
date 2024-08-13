@@ -37,7 +37,7 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
                 name: "".to_string(),
                 ft: "".to_string(),
             }]),
-            filename: "".to_string(),
+            dir: todo!(),
         }],
         build: vec![Build {
             step: "".to_string(),
