@@ -1,5 +1,5 @@
 [package]
-name = "filedb"
+name = "filedb-ng"
 description = "Database that's using files to store data. See documetation for more information"
 license-file =  "../LICENSE"
 version = "0.1.0"

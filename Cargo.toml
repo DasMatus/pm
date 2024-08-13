@@ -10,7 +10,7 @@ fetch-data = "0.2.0"
 indicatif = "0.17.8"
 serde = { version = "1.0.204", features = ["derive"] }
 serde_yaml = "0.9.34"
-filedb = {version = "0.1.0", path = "filedb"}
+filedb-ng = {version = "0.1.0", path = "filedb"}
 anyhow = "1.0.86"
 derive_more = { version = "1.0.0", features = ["as_ref"] }
 toml = "0.8.19"

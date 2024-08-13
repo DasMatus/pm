@@ -342,7 +342,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "filedb"
+name = "filedb-ng"
 version = "0.1.0"
 dependencies = [
  "serde",
@@ -542,7 +542,7 @@ dependencies = [
  "compress-tools",
  "derive_more 1.0.0",
  "fetch-data",
- "filedb",
+ "filedb-ng",
  "indicatif",
  "serde",
  "serde_yaml",
