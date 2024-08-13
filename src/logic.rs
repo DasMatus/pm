@@ -102,8 +102,10 @@ impl Cfg {
                             Path::new("source").join(d.file_name()),
                             compress_tools::Ownership::Preserve,
                         );
-                        bar.set_message(format!("Decompressing {d} to {}", 
-                            Path::new("source").join(d.file_name())));
+                        bar.set_message(format!(
+                            "Decompressing {d} to {}",
+                            Path::new("source").join(d.file_name())
+                        ));
                     }
                 }
             }
