@@ -116,12 +116,12 @@ impl Cfg {
             std::env::set_current_dir("source");
             if let Some(chdir) = i.chdir {
                 Command::new(i.command[1])
-                    .args(i.prepare[2..i.command.len()])
+                    .args(i.prepare[2..=i.command.len()].iter())
                     .current_dir(chdir)
                     .status()?
             }
             Command::new(i.command[1])
-                .args(i.prepare[2..i.command.len()])
+                .args(i.prepare[2..=i.command.len()].iter())
                 .status()?
         }
         // build
