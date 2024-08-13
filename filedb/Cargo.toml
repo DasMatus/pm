@@ -1,6 +1,7 @@
 [package]
 name = "filedb"
-description = "Database that's using files"
+description = "Database that's using files to store data. See documetation for more information"
+license-file =  "../LICENSE"
 version = "0.1.0"
 edition = "2021"
 
