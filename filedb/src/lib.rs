@@ -2,7 +2,7 @@
 //! A **library-only** database that uses files instead of single monolith `.db` file.
 //! It's very simple, since it only handles writing and reading to/from files and doesn't include encryption and CLI.
 //! > You have to do these things yourself, either through having the database on something like [VeraCrypt volume](https://veracrypt.org) or on another machine.
-//! Anyway, take a look around.
+//! > Anyway, take a look around.
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 /// Main struct that handles the database
@@ -21,7 +21,7 @@ impl<Struct: Serialize + Default + for<'de> serde::Deserialize<'de>>
 {
     /// Initializes the database
     pub fn new(location: String) -> Self {
-        if Path::new(&location).exists() == false {
+        if !Path::new(&location).exists() {
             std::fs::DirBuilder::new()
                 .recursive(true)
                 .create(&location)
@@ -44,12 +44,10 @@ impl<Struct: Serialize + Default + for<'de> serde::Deserialize<'de>>
         let join = Path::new(&self.db_location).join(&table);
         match join.exists() {
             true => (),
-            false => {
-                std::fs::DirBuilder::new()
-                    .recursive(true)
-                    .create(&join)
-                    .unwrap()
-            }
+            false => std::fs::DirBuilder::new()
+                .recursive(true)
+                .create(&join)
+                .unwrap(),
         };
         self.table = table;
         self.contents = contents;

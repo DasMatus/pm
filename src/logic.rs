@@ -1,8 +1,8 @@
-use std::process::Command;
-
+use crate::Path;
 use clap::Parser;
 use derive_more::AsRef;
 use serde::{Deserialize, Serialize};
+use std::process::Command;
 #[non_exhaustive]
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Cfg {
@@ -58,13 +58,13 @@ pub(crate) struct Cli {
     /// Path to the build file
     pub(crate) file: Option<String>,
 }
+
 impl Cfg {
-    pub(crate) fn new(c: String) -> Self {
+    pub(crate) fn new(c: String) -> anyhow::Result<Self, anyhow::Error> {
         let yaml: Self = serde_yaml::from_str(
-            std::fs::read_to_string(c.as_str())?().as_str(),
-        )
-        ?();
-        Self {
+            std::fs::read_to_string(c.as_str())?.as_str(),
+        )?;
+        Ok(Self {
             name: yaml.name,
             version: yaml.version,
             dependencies: yaml.dependencies,
@@ -72,7 +72,7 @@ impl Cfg {
             prepare: yaml.prepare,
             build: yaml.build,
             install: yaml.install,
-        }
+        })
     }
     pub(crate) fn run(self) -> anyhow::Result<(), anyhow::Error> {
         let len: usize = self.dependencies.len()
@@ -80,7 +80,7 @@ impl Cfg {
             + self.prepare.len()
             + self.build.len()
             + self.install.len();
-        let bar = indicatif::ProgressBar::new((len as usize).try_into()?);
+        let bar = indicatif::ProgressBar::new((len).try_into()?);
         bar.set_style(indicatif::ProgressStyle::default_bar());
         bar.set_message(format!("Making package {}", self.name));
         let cesta = std::path::Path::new("/tmp").join(self.name);
@@ -89,10 +89,11 @@ impl Cfg {
             if let Some(i) = i.dl {
                 for url in i {
                     bar.set_message(format!(
-                        "Downloading {:#?} into {}/{}",
+                        "Downloading {:#?} into {}/{}{}",
                         cesta.as_path().to_str(),
                         url.url,
-                        format!("{}{}", url.name, url.ft)
+                        url.name,
+                        url.ft
                     ));
                     std::fs::DirBuilder::new()
                         .recursive(true)
@@ -100,55 +101,62 @@ impl Cfg {
                     fetch_data::download(url.url, &cesta)?;
                     for file in std::fs::read_dir(&cesta)? {
                         let d = file?;
+                        let archive = std::fs::File::open(d.path())?;
                         compress_tools::uncompress_archive(
-                            d,
-                            Path::new("source").join(d.file_name()),
+                            archive,
+                            Path::new("source").join(d.file_name()).as_path(),
                             compress_tools::Ownership::Preserve,
-                        );
+                        )?;
                         bar.set_message(format!(
-                            "Decompressing {d} to {}",
-                            Path::new("source").join(d.file_name())
+                            "Decompressing {d:#?} to {}",
+                            Path::new("source").join(d.file_name()).display()
                         ));
                     }
                 }
             }
             bar.set_message(format!("Running prepare task {}", i.step));
-            std::env::set_current_dir("source");
+            std::env::set_current_dir("source")?;
             if let Some(chdir) = i.chdir {
-                Command::new(i.command[1])
-                    .args(i.prepare[2..=i.command.len()].iter())
+                Command::new(&i.command[1])
+                    .args(i.command[2..=i.command.len()].iter())
                     .current_dir(chdir)
-                    .status()?
+                    .status()?;
             }
-            Command::new(i.command[1])
-                .args(i.prepare[2..=i.command.len()].iter())
-                .status()?
+            Command::new(&i.command[1])
+                .args(i.command[2..=i.command.len()].iter())
+                .status()?;
         }
         // build
         for build in self.build {
-            bar.set_message(format!("Running command {}", build.command.iter()));
-            if let Some(chdir) = i.chdir {
-                Command::new(build.command[1])
+            bar.set_message(format!(
+                "Running command {:#?}",
+                build.command.iter()
+            ));
+            if let Some(chdir) = build.chdir {
+                Command::new(&build.command[1])
                     .args(build.command[2..=build.command.len()].iter())
                     .current_dir(chdir)
-                    .status()?
+                    .status()?;
             }
-            Command::new(build.command[1])
+            Command::new(&build.command[1])
                 .args(build.command[2..=build.command.len()].iter())
-                .status()?
+                .status()?;
         }
         // install
         for install in self.install {
-            bar.set_message(format!("Running command {}", build.command.iter()));
-            if let Some(chdir) = i.chdir {
-                Command::new(install.command[1])
-                    .args(install.command[2..=build.command.len()].iter())
+            bar.set_message(format!(
+                "Running command {:#?}",
+                &install.command.iter()
+            ));
+            if let Some(chdir) = install.chdir {
+                Command::new(&install.command[1])
+                    .args(install.command[2..=install.command.len()].iter())
                     .current_dir(chdir)
-                    .status()?
+                    .status()?;
             }
-            Command::new(install.command[1])
+            Command::new(&install.command[1])
                 .args(install.command[2..=install.command.len()].iter())
-                .status()?
+                .status()?;
         }
         Ok(())
     }

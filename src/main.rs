@@ -3,7 +3,7 @@ mod logic;
 use std::path::Path;
 
 use clap::Parser;
-use filedb::DB;
+use filedb_ng::DB;
 use logic::*;
 fn main() -> anyhow::Result<(), anyhow::Error> {
     println!(">> Checking if the database exists");
@@ -37,7 +37,7 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
                 name: "".to_string(),
                 ft: "".to_string(),
             }]),
-            dir: todo!(),
+            dir: None,
         }],
         build: vec![Build {
             step: "".to_string(),
@@ -65,7 +65,7 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
                 println!(">> Package {i} exists, not rebuilding it");
                 continue;
             } else {
-                Cfg::new(b).run()?;
+                Cfg::new(b.clone())?.run()?;
             }
         }
     }
