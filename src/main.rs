@@ -4,7 +4,7 @@ use std::path::Path;
 
 use clap::Parser;
 use filedb_ng::DB;
-use logic::*;
+use logic::{Build, Cfg, Cli, Contents, Prepare, DL};
 fn main() -> anyhow::Result<(), anyhow::Error> {
     println!(">> Checking if the database exists");
     #[cfg(any(target_os = "macos", target_os = "windows"))]
@@ -24,30 +24,30 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
     }
     let args = Cli::parse();
     let cfg = Cfg {
-        name: "".to_string(),
-        version: "".to_string(),
-        dependencies: vec!["".to_string()],
-        provides: vec!["".to_string()],
+        name: String::new(),
+        version: String::new(),
+        dependencies: vec![String::new()],
+        provides: vec![String::new()],
         prepare: vec![Prepare {
-            step: "".to_string(),
-            command: vec!["".to_string()],
-            chdir: Some("".to_string()),
+            step: String::new(),
+            command: vec![String::new()],
+            chdir: Some(String::new()),
             dl: Some(vec![DL {
-                url: "".to_string(),
-                name: "".to_string(),
-                ft: "".to_string(),
+                url: String::new(),
+                name: String::new(),
+                ft: String::new(),
             }]),
             dir: None,
         }],
         build: vec![Build {
-            step: "".to_string(),
-            command: vec!["".to_string()],
-            chdir: Some("".to_string()),
+            step: String::new(),
+            command: vec![String::new()],
+            chdir: Some(String::new()),
         }],
         install: vec![Build {
-            step: "".to_string(),
-            command: vec!["".to_string()],
-            chdir: Some("".to_string()),
+            step: String::new(),
+            command: vec![String::new()],
+            chdir: Some(String::new()),
         }],
     };
     if let Some(p) = args.path {
@@ -64,9 +64,8 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
             if b == i {
                 println!(">> Package {i} exists, not rebuilding it");
                 continue;
-            } else {
-                Cfg::new(b.clone())?.run()?;
             }
+            Cfg::new(b.clone())?.run()?;
         }
     }
     Ok(())
