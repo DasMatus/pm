@@ -1,0 +1,27 @@
+---
+name: 'hello'
+version: '0.0.0'
+dependencies:
+- ''
+provides:
+- ''
+prepare:
+- dl:
+  - url: 'https://ftp.gnu.org/gnu/hello/hello-2.12.1.tar.gz'
+    name: 'hello'
+    ft: '.tar.gz'
+  step: 'Download the file'
+  dir: 'dl'
+  command:
+  - './configure'
+  chdir: 'dl'
+build:
+- step: 'make'
+  command:
+  - ''
+  chdir: ''
+install:
+- step: 'make install DESTDIR=$INSTDIR'
+  command:
+  - 'make install DESTDIR=$INSTDIR'
+  chdir: ''
