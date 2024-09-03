@@ -5,8 +5,8 @@ struct Data {
     name: String,
     surname: String,
 }
-fn main() {
-    let mut db: DB<Data> = DB::new("example".to_string());
+fn main() -> anyhow::Result<(), anyhow::Error> {
+    let mut db: DB<Data> = DB::new("example".to_string())?;
     db.populate(
         "government".to_string(),
         "id".to_string(),
@@ -14,6 +14,7 @@ fn main() {
             name: "".to_string(),
             surname: "".to_string(),
         }),
-    );
+    )?;
     println!("{:#?}", db.open("government".to_string(), "id".to_string()));
+    Ok(())
 }

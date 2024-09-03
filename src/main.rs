@@ -19,8 +19,8 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
         println!("\t>> Database exists, continuing");
     } else {
         println!("\t>> Creating database at {db_loc}");
-        let mut db: DB<Contents> = DB::new(db_loc.to_string());
-        db.populate("pkgs".to_string(), "db".to_string(), None);
+        let mut db: DB<Contents> = DB::new(db_loc.to_string())?;
+        db.populate("pkgs".to_string(), "db".to_string(), None)?;
     }
     let args = Cli::parse();
     let cfg = Cfg {
@@ -58,8 +58,8 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
         println!(">> Written example configuration to {p}.yml");
     }
     if let Some(b) = args.file {
-        let db: DB<Contents> = DB::new(db_loc.to_string());
-        let cfg: Contents = db.open("pkgs".to_string(), "db".to_string());
+        let db: DB<Contents> = DB::new(db_loc.to_string())?;
+        let cfg: Contents = db.open("pkgs".to_string(), "db".to_string())?;
         for i in cfg.pkgs {
             if b == i {
                 println!(">> Package {i} exists, not rebuilding it");
