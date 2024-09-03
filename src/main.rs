@@ -65,7 +65,7 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
                 println!(">> Package {i} exists, not rebuilding it");
                 continue;
             }
-            Cfg::new(b.clone())?.run()?;
+            Cfg::new(&b)?.run()?;
         }
     }
     Ok(())

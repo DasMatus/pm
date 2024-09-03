@@ -60,10 +60,9 @@ pub(crate) struct Cli {
 }
 
 impl Cfg {
-    pub(crate) fn new(c: String) -> anyhow::Result<Self, anyhow::Error> {
-        let yaml: Self = serde_yaml::from_str(
-            std::fs::read_to_string(c.as_str())?.as_str(),
-        )?;
+    pub(crate) fn new(c: &str) -> anyhow::Result<Self, anyhow::Error> {
+        let yaml: Self =
+            serde_yaml::from_str(std::fs::read_to_string(c)?.as_str())?;
         Ok(Self {
             name: yaml.name,
             version: yaml.version,
