@@ -1,4 +1,4 @@
-#![warn(clippy::all)]
+#![warn(clippy::all, clippy::pedantic)]
 mod logic;
 use std::path::Path;
 
