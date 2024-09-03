@@ -158,6 +158,7 @@ impl Cfg {
                 .args(install.command[2..=install.command.len()].iter())
                 .status()?;
         }
+        println!("Finished");
         Ok(())
     }
 }
